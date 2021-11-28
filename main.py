@@ -1,10 +1,7 @@
 import argparse
 import json
 import re
-import autopep8
 from tqdm import tqdm
-
-
 
 
 class Validator:
@@ -28,9 +25,25 @@ class Validator:
         return False
 
     def control_inn(inn: str) -> bool:
-        if len(inn) == 11:
+        if len(inn) == 12:
             return True
         return False
+
+    def control_political_views(political_view:str)->bool:
+        valid_political_views='Индифферентные, Социалистические, Умеренные, Либеральные, Консервативные, Коммунистические, Анархистские, Либертарианские'
+        if type(political_view)!=str:
+            return False
+        if political_view not in valid_political_views:
+            return False
+        return True
+
+    def control_worldview(worldview:str)->bool:
+        valid_worldview='Сакулярный гуманизм, Иудаизм, Деизм, Конфуцианство, Католицизм, Пантеизм, Агностицизм, Атеизм, Буддизм'
+        if type(worldview)!=str:
+            return False
+        if worldview not in valid_worldview:
+            return False
+        return True
 
     def control_passport(passport_number: int) -> bool:
         if len(str(passport_number)) == 6:
@@ -41,7 +54,15 @@ class Validator:
         pattern = '[а-яА-Я \-.0-9]{1,}[а-яА-Я0-9]{1,}'
         if type(address) != str:
             return False
-        if re.match(pattern, address):
+        if re.match(r"(ул\.\s[\w .-]+\d+)",address) is not None and re.match(r"^Аллея\s[\w .-]+\d+$",address) is None:
+            return True
+        return False
+
+    def control_university(university)->bool:
+        invalid_university='Дурмстранг, Шамбартон, Хогвартс, Кирин-Тор, Аретуза'
+        if type(university)!=str:
+            return False
+        if university not in invalid_university:
             return True
         return False
 
@@ -87,16 +108,16 @@ with tqdm(total=len(data)) as progressbar:
         if not Validator.control_passport(person['passport_number']):
             passport_number += 1
             temp = False
-        if not Validator.control_string(person['university']):
+        if not Validator.control_university(person['university']):
             university += 1
             temp = False
         if not Validator.control_experience(person['work_experience']):
             work_experience += 1
             temp = False
-        if not Validator.control_string(person['political_views']):
+        if not Validator.control_political_views(person['political_views']):
             political_view += 1
             temp = False
-        if not Validator.control_string(person['worldview']):
+        if not Validator.control_worldview(person['worldview']):
             worldview += 1
             temp = False
         if not Validator.control_address(person["address"]):
@@ -115,7 +136,7 @@ print(f'Число валидных записей: {len(true_data)}')
 print(f'Число невалидных записей: {len(data) - len(true_data)}')
 print(f'Число невалидных адресов электронной почты:  {email}')
 print(f'Число невалидных маcc: {weight}')
-print(f'Число невалидных номеров: {inn}')
+print(f'Число невалидных ИНН: {inn}')
 print(f'Число невалидных паспортных номеров: {passport_number}')
 print(f'Число невалидных университетов: {university}')
 print(f'Число невалидных рабочих стажей: {work_experience}')
@@ -123,8 +144,7 @@ print(f'Число невалидных политических взглядо�
 print(f'Число невалидных мировоззрений: {worldview}')
 print(f'Число невалидных адрессов: {address}')
 
-#python.exe main.py - input C:\\test\\input.txt - output C:\\test\\output.txt
-
+#python.exe main.py -input C:\\test\\input.txt -output C:\\test\\output.txt
 
 
 
