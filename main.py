@@ -37,13 +37,16 @@ class Validator:
             return False
         return True
 
+
     def control_worldview(worldview:str)->bool:
-        valid_worldview='Сакулярный гуманизм, Иудаизм, Деизм, Конфуцианство, Католицизм, Пантеизм, Агностицизм, Атеизм, Буддизм'
-        if type(worldview)!=str:
+        valid_worldview='Секулярный гуманизм, Иудаизм, Деизм, Конфуцианство, Католицизм, Пантеизм, Агностицизм, Атеизм, Буддизм'
+        if type(worldview) != str:
             return False
         if worldview not in valid_worldview:
             return False
         return True
+
+
 
     def control_passport(passport_number: int) -> bool:
         if len(str(passport_number)) == 6:
@@ -51,15 +54,14 @@ class Validator:
         return False
 
     def control_address(address) -> bool:
-        pattern = '[а-яА-Я \-.0-9]{1,}[а-яА-Я0-9]{1,}'
-        if type(address) != str:
+       if type(address) != str:
             return False
-        if re.match(r"(ул\.\s[\w .-]+\d+)",address) is not None and re.match(r"^Аллея\s[\w .-]+\d+$",address) is None:
+       if re.match(r"^(ул\.)?(Аллея)?\s[\w\.\s-]+\d+$", address) is not None:
             return True
-        return False
+       return False
 
     def control_university(university)->bool:
-        invalid_university='Дурмстранг, Шамбартон, Хогвартс, Кирин-Тор, Аретуза'
+        invalid_university='Дурмстранг, Шамбартон, Хогвартс, Кирин-Тор, Аретуза, Бан Ард, Каражан, Гвейсон Хайль'
         if type(university)!=str:
             return False
         if university not in invalid_university:
